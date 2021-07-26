@@ -1,0 +1,17 @@
+<library path="./">
+  <class name="RosRtpreempt" type="rqt_rt_preempt.ros_rt_preempt.RosRtpreempt" base_class_type="rqt_gui_py::Plugin">
+    <description>
+      A Python GUI plugin to configure rt-preempt.
+    </description>
+    <qtgui>
+      <group>
+        <label>Miscellaneous Tools</label>
+        <icon type="theme">folder</icon>
+        <statustip>Plugins related to Miscellaneous Tools.</statustip>
+      </group>
+      <label>Configure rt-preempt</label>
+      <icon type="theme">preferences-system-network</icon>
+      <statustip>A Python GUI plugin for visualizing the ROS computation graph.</statustip>
+    </qtgui>
+  </class>
+</library>
