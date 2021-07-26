@@ -16,8 +16,8 @@
   <widget class="QPushButton" name="buttonBuild">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>280</y>
+     <x>10</x>
+     <y>250</y>
      <width>201</width>
      <height>25</height>
     </rect>
@@ -106,6 +106,16 @@
    </property>
    <property name="text">
     <string>Build directory</string>
+   </property>
+  </widget>
+  <widget class="QPlainTextEdit" name="plainTextEditLog">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>320</y>
+     <width>671</width>
+     <height>121</height>
+    </rect>
    </property>
   </widget>
  </widget>

@@ -40,11 +40,26 @@ class RtpreemptWidget(QWidget):
     def buttonBuildPressed(self):
         self.buttonBuild.setText('Text Changed')
         
-        subprocess.run(["mkdir", "-p", self.lineEditBuildDir.text()])
+        if not os.path.isdir(self.lineEditBuildDir.text()):
+            os.makedirs(self.lineEditBuildDir.text())
+            self.plainTextEditLog.setPlainText("Created Build Directory: " + self.lineEditBuildDir.text())
+        else:
+            self.plainTextEditLog.setPlainText("Build Directory already exists: " + self.lineEditBuildDir.text())
         
+        self.plainTextEditLog.setPlainText("Downloading: " + self.lineEditRtpreemptPatch.text())       
         subprocess.run(["wget", "-P", self.lineEditBuildDir.text(), self.lineEditRtpreemptPatch.text()])
         
+        self.plainTextEditLog.setPlainText("Downloading: " + self.lineEditLinuxKernel.text())
         subprocess.run(["wget", "-P", self.lineEditBuildDir.text(), self.lineEditLinuxKernel.text()])
+        
+        self.plainTextEditLog.setPlainText("Extracting: " + self.lineEditRtpreemptPatch.text())
+        subprocess.run(["gunzip", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditRtpreemptPatch.text()) ])
+        
+        self.plainTextEditLog.setPlainText("Extracting: " + self.lineEditLinuxKernel.text())
+        subprocess.run(["tar", "-xzf", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()), "-C",  self.lineEditBuildDir.text()])
+        
+        
+        
 
     def start(self):
         pass
