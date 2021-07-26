@@ -36,6 +36,8 @@ class RtpreemptWidget(QWidget):
         self.lineEditLinuxKernel.setText("https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.10.52.tar.gz")
         # self.lineEditBuildDir.setText("/home/ros2/rt-preempt-kernel/5.10.52/")
         self.lineEditBuildDir.setText("/tmp/haaa")
+        self.lineEditKernelConfig.setText("/boot/config-5.8.0-63-generic")
+        
         
     def buttonBuildPressed(self):
         self.buttonBuild.setText('Text Changed')
@@ -58,12 +60,23 @@ class RtpreemptWidget(QWidget):
         # self.plainTextEditLog.setPlainText("Extracting: " + self.lineEditLinuxKernel.text())
         # subprocess.run(["tar", "-xzf", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()), "-C",  self.lineEditBuildDir.text()])
         #
-
-        self.plainTextEditLog.setPlainText("Patching linux kernel")
-        output = subprocess.run(["patch", "-d", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz"), "-p1", '< ' + self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditRtpreemptPatch.text()).rstrip('.gz')],  capture_output=True)
+        #
+        # self.plainTextEditLog.setPlainText("Patching linux kernel")
+        # #output = subprocess.run(["patch", "-d", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz"), "-p1", '< ' + self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditRtpreemptPatch.text()).rstrip('.gz')],  capture_output=True)
+        #
+        # output = os.system("patch -d " + self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz") + " -p1 " + '< ' + self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditRtpreemptPatch.text()).rstrip('.gz'))
+        #
+        # # print(output)
+        # self.plainTextEditLog.setPlainText("Linux kernel patched")
         
-        print(output)
-        self.plainTextEditLog.setPlainText("hey:" )
+        self.plainTextEditLog.setPlainText("Copying " + self.lineEditKernelConfig.text() + " to ..../.config")       
+        subprocess.run(["cp", self.lineEditKernelConfig.text() , self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz") + "/.config"])
+        
+        self.plainTextEditLog.setPlainText("Configure kernel")
+        # subprocess.run(["yes", "''", "|", "make oldconfig", "-C",  self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz")])
+        os.system("yes '' | make oldconfig -C" + self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz"))
+
+
 
     def start(self):
         pass
