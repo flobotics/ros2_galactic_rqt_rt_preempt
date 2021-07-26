@@ -46,20 +46,24 @@ class RtpreemptWidget(QWidget):
         else:
             self.plainTextEditLog.setPlainText("Build Directory already exists: " + self.lineEditBuildDir.text())
         
-        self.plainTextEditLog.setPlainText("Downloading: " + self.lineEditRtpreemptPatch.text())       
-        subprocess.run(["wget", "-P", self.lineEditBuildDir.text(), self.lineEditRtpreemptPatch.text()])
+        # self.plainTextEditLog.setPlainText("Downloading: " + self.lineEditRtpreemptPatch.text())       
+        # subprocess.run(["wget", "-P", self.lineEditBuildDir.text(), self.lineEditRtpreemptPatch.text()])
+        #
+        # self.plainTextEditLog.setPlainText("Downloading: " + self.lineEditLinuxKernel.text())
+        # subprocess.run(["wget", "-P", self.lineEditBuildDir.text(), self.lineEditLinuxKernel.text()])
+        #
+        # self.plainTextEditLog.setPlainText("Extracting: " + self.lineEditRtpreemptPatch.text())
+        # subprocess.run(["gunzip", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditRtpreemptPatch.text()) ])
+        #
+        # self.plainTextEditLog.setPlainText("Extracting: " + self.lineEditLinuxKernel.text())
+        # subprocess.run(["tar", "-xzf", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()), "-C",  self.lineEditBuildDir.text()])
+        #
+
+        self.plainTextEditLog.setPlainText("Patching linux kernel")
+        output = subprocess.run(["patch", "-d", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz"), "-p1", '< ' + self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditRtpreemptPatch.text()).rstrip('.gz')],  capture_output=True)
         
-        self.plainTextEditLog.setPlainText("Downloading: " + self.lineEditLinuxKernel.text())
-        subprocess.run(["wget", "-P", self.lineEditBuildDir.text(), self.lineEditLinuxKernel.text()])
-        
-        self.plainTextEditLog.setPlainText("Extracting: " + self.lineEditRtpreemptPatch.text())
-        subprocess.run(["gunzip", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditRtpreemptPatch.text()) ])
-        
-        self.plainTextEditLog.setPlainText("Extracting: " + self.lineEditLinuxKernel.text())
-        subprocess.run(["tar", "-xzf", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()), "-C",  self.lineEditBuildDir.text()])
-        
-        
-        
+        print(output)
+        self.plainTextEditLog.setPlainText("hey:" )
 
     def start(self):
         pass
