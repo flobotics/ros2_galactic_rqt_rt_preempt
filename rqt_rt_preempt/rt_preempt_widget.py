@@ -42,6 +42,10 @@ class RtpreemptWidget(QWidget):
     def buttonBuildPressed(self):
         self.buttonBuild.setText('Text Changed')
         
+        
+        
+        
+        
         if not os.path.isdir(self.lineEditBuildDir.text()):
             os.makedirs(self.lineEditBuildDir.text())
             self.plainTextEditLog.setPlainText("Created Build Directory: " + self.lineEditBuildDir.text())
@@ -69,14 +73,34 @@ class RtpreemptWidget(QWidget):
         # # print(output)
         # self.plainTextEditLog.setPlainText("Linux kernel patched")
         
-        self.plainTextEditLog.setPlainText("Copying " + self.lineEditKernelConfig.text() + " to ..../.config")       
-        subprocess.run(["cp", self.lineEditKernelConfig.text() , self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz") + "/.config"])
+        # self.plainTextEditLog.setPlainText("Copying " + self.lineEditKernelConfig.text() + " to ..../.config")       
+        # subprocess.run(["cp", self.lineEditKernelConfig.text() , self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz") + "/.config"])
+        #
+        # self.plainTextEditLog.setPlainText("Configure kernel")
+        # # subprocess.run(["yes", "''", "|", "make oldconfig", "-C",  self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz")])
+        # os.system("yes '' | make oldconfig -C" + self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz"))
+
+        self.testIsPackageInstalled('flex')
+        self.testIsPackageInstalled('bison')
+        self.testIsPackageInstalled('openssl')
+        self.testIsPackageInstalled('libncurses-dev')
+        self.testIsPackageInstalled('libssl-dev')
+        self.testIsPackageInstalled('dkms')
+        self.testIsPackageInstalled('libelf-dev')
+        self.testIsPackageInstalled('libudev-dev')
+        self.testIsPackageInstalled('libpci-dev')
+        self.testIsPackageInstalled('libiberty-dev')
+        self.testIsPackageInstalled('autoconf')
+        self.testIsPackageInstalled('fakeroot')
         
-        self.plainTextEditLog.setPlainText("Configure kernel")
-        # subprocess.run(["yes", "''", "|", "make oldconfig", "-C",  self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz")])
-        os.system("yes '' | make oldconfig -C" + self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz"))
+        
 
-
+    def testIsPackageInstalled(self, name):
+        output = subprocess.run(["dpkg", "-l", name ],  capture_output=True)
+        dpkg_output = output.stdout.decode('utf-8').split('\n')
+        dpkg_output_line = dpkg_output[len(dpkg_output) - 2]
+        if not dpkg_output_line.startswith('ii'):
+            self.plainTextEditLog.setPlainText("Install " + name + " and try it again. sudo apt install " + name)
 
     def start(self):
         pass
