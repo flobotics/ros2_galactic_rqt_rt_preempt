@@ -49,6 +49,7 @@ class RtpreemptWidget(QWidget):
         current_linux_version = subprocess.run(["uname", "-mrs"], capture_output=True)
         self.labelCurrentRunningKernel.setText("Current running kernel: " + current_linux_version.stdout.decode('utf-8'))
         
+        self.setHelpText()
      
     def buttonMakeMenuconfigClicked(self):
         self.process.start( 'gnome-terminal', ['--working-directory', self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz"), '-e', 'make menuconfig'])
@@ -128,6 +129,43 @@ class RtpreemptWidget(QWidget):
             # self._logText += "->Install " + name + " and try it again. sudo apt install " + name + '\n'
             # self.plainTextEditLog.setPlainText(self._logText)
 
+    def setHelpText(self):
+        self.plainTextEditHelp.setPlainText("When running 'make menuconfig'-button, you need to setup\n\
+        rt-preempt stuff. This is done with make menuconfig and not per e.g. script-insert, because there\n\
+        is included more, and perhaps this changes from version to version, so configure it with make menuconfig\n\
+        is the best, most universal option. You need to select in make menuconfig the following \n\
+        --> Enable CONFIG_PREEMPT_RT \n\
+            -> General Setup \n\
+                -> Preemption Model (Fully Preemptible Kernel (Real-Time)) \n\
+                    (X) Fully Preemptible Kernel (Real-Time)) \n\
+        \n\
+        --> Enable CONFIG_HIGH_RES_TIMERS \n\
+            -> General setup \n\
+                -> Timers subsystem \n\
+                    [*] High Resolution Timer Support \n\
+         \n\
+        --> Enable CONFIG_NO_HZ_FULL \n\
+            -> General setup \n\
+                -> Timers subsystem \n\
+                    -> Timer tick handling (Full dynticks system (tickless)) \n\
+                        (X) Full dynticks system (tickless)            \n\
+         \n\
+        --> Set CONFIG_HZ_1000 (note: this is no longer in the General Setup menu, go back twice) \n\
+            -> Processor type and features \n\
+                -> Timer frequency (1000 HZ) \n\
+                    (X) 1000 HZ            \n\
+         \n\
+        --> Set CPU_FREQ_DEFAULT_GOV_PERFORMANCE [=y] \n\
+            ->  Power management and ACPI options \n\
+                -> CPU Frequency scaling \n\
+                    -> CPU Frequency scaling (CPU_FREQ [=y]) \n\
+                        -> Default CPUFreq governor (<choice> [=y]) \n\
+                            (X) performance \n\
+        ")
+                       
+        
+        
+        
     def start(self):
         pass
 
