@@ -24,14 +24,15 @@ class RtpreemptWidget(QWidget):
         super(RtpreemptWidget, self).__init__()
 
         self._node = node
-        
         self._logText = ''
+        self.process  = QProcess(self)
+        self._plugin = plugin
 
         _, package_path = get_resource('packages', 'rqt_rt_preempt')
         ui_file = os.path.join(package_path, 'share', 'rqt_rt_preempt', 'resource', 'RosRtpreempt.ui')
         loadUi(ui_file, self)
          
-        self._plugin = plugin
+        
         
         self.buttonDownloadConfigure.clicked.connect(self.buttonDownloadConfigurePressed)
         self.buttonMakeMenuconfig.clicked.connect(self.buttonMakeMenuconfigPressed)
@@ -44,27 +45,27 @@ class RtpreemptWidget(QWidget):
         self.lineEditBuildDir.setText("/tmp/haaa")
         self.lineEditKernelConfig.setText("/boot/config-5.8.0-63-generic")
         
+        #uname -mrs
+        current_linux_version = subprocess.run(["uname", "-mrs"], capture_output=True)
+        self.labelCurrentRunningKernel.setText("Current running kernel: " + current_linux_version.stdout.decode('utf-8'))
+        
      
     def buttonMakeMenuconfigPressed(self):
-        self.process  = QProcess(self)
         self.process.start( 'gnome-terminal', ['--working-directory', self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz"), '-e', 'make menuconfig'])
         
     
     def buttonInstallPressed(self):
-        pass
+        print("buttonInstallPressed:")
+        wdir = self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz")
+        self.process.start( 'gnome-terminal', ['--working-directory', wdir, '-e', "sudo make modules_install"])
+        self.process.start( 'gnome-terminal', ['--working-directory', wdir, '-e', "sudo make install"])
     
     def buttonBuildPressed(self):
-        print("buttonBuildPressed:")
-        self.process  = QProcess(self)
         wdir = self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz")
-        self.process.start( 'gnome-terminal', ['--working-directory', wdir, '-e', 'make -j', "'nproc'", 'deb-pkg'])
-        # subprocess.run(["cd", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz"), '&&', 'make', '-j', 'nproc', 'deb-pkg'])
-        
-        #make -j `nproc` deb-pkg
-        # pass
+        self.process.start( 'gnome-terminal', ['--working-directory', wdir, '-e', "make -j `nproc`"])
+     
         
     def buttonDownloadConfigurePressed(self):
-        self.buttonBuild.setText('Text Changed')
 
         self.testIsPackageInstalled('flex')
         self.testIsPackageInstalled('bison')
