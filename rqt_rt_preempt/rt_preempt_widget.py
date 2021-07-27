@@ -34,6 +34,9 @@ class RtpreemptWidget(QWidget):
         self._plugin = plugin
         
         self.buttonDownloadConfigure.clicked.connect(self.buttonDownloadConfigurePressed)
+        self.buttonMakeMenuconfig.clicked.connect(self.buttonMakeMenuconfigPressed)
+        self.buttonBuild.clicked.connect(self.buttonBuildPressed)
+        self.buttonInstall.clicked.connect(self.buttonInstallPressed)
         
         self.lineEditRtpreemptPatch.setText("http://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/patch-5.10.52-rt47.patch.gz")
         self.lineEditLinuxKernel.setText("https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.10.52.tar.gz")
@@ -42,23 +45,23 @@ class RtpreemptWidget(QWidget):
         self.lineEditKernelConfig.setText("/boot/config-5.8.0-63-generic")
         
      
-    def buttonMakeMenuconfig(self):
-        # exec("cd /tmp/haaa/linux-5.10.52 && make menuconfig")
-        # exec('/bin/bash')
+    def buttonMakeMenuconfigPressed(self):
         self.process  = QProcess(self)
-        self.terminal = QWidget(self)
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.terminal)
-        self.process.start(
-            'xterm',
-            ['-into', str(self.terminal.winId())]
-        )
+        self.process.start( 'gnome-terminal', ['--working-directory', self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz"), '-e', 'make menuconfig'])
         
     
-    def buttonInstall(self):
+    def buttonInstallPressed(self):
         pass
     
-    
+    def buttonBuildPressed(self):
+        print("buttonBuildPressed:")
+        self.process  = QProcess(self)
+        wdir = self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz")
+        self.process.start( 'gnome-terminal', ['--working-directory', wdir, '-e', 'make -j  deb-pkg'])
+        # subprocess.run(["cd", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz"), '&&', 'make', '-j', 'nproc', 'deb-pkg'])
+        
+        #make -j `nproc` deb-pkg
+        # pass
         
     def buttonDownloadConfigurePressed(self):
         self.buttonBuild.setText('Text Changed')
