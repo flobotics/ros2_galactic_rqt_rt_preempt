@@ -57,7 +57,7 @@ class RtpreemptWidget(QWidget):
         print("buttonBuildPressed:")
         self.process  = QProcess(self)
         wdir = self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz")
-        self.process.start( 'gnome-terminal', ['--working-directory', wdir, '-e', 'make -j  deb-pkg'])
+        self.process.start( 'gnome-terminal', ['--working-directory', wdir, '-e', 'make -j', "'nproc'", 'deb-pkg'])
         # subprocess.run(["cd", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz"), '&&', 'make', '-j', 'nproc', 'deb-pkg'])
         
         #make -j `nproc` deb-pkg
