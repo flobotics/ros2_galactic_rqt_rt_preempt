@@ -45,7 +45,7 @@ class RtpreemptWidget(QWidget):
         self.lineEditBuildDir.setText("/tmp/haaa")
         self.lineEditKernelConfig.setText("/boot/config-5.8.0-63-generic")
         
-        #uname -mrs
+        # Get running linux version and display it
         current_linux_version = subprocess.run(["uname", "-mrs"], capture_output=True)
         self.labelCurrentRunningKernel.setText("Current running kernel: " + current_linux_version.stdout.decode('utf-8'))
         
@@ -80,63 +80,53 @@ class RtpreemptWidget(QWidget):
         self.testIsPackageInstalled('autoconf')
         self.testIsPackageInstalled('fakeroot')
         
+        # if testIsPackageInstalled writes some logs, the user NEED to install first
         if len(self._logText) > 0:
             return
         
         if not os.path.isdir(self.lineEditBuildDir.text()):
             os.makedirs(self.lineEditBuildDir.text())
-            self._logText += "->Created Build Directory: " + self.lineEditBuildDir.text() + '\n'
-            self.plainTextEditLog.setPlainText(self._logText)
+            self.setLogText("->Created Build Directory: " + self.lineEditBuildDir.text())
         else:
-            self._logText += "->Build Directory already exists: " + self.lineEditBuildDir.text() + '\n'
-            # self.plainTextEditLog.setPlainText("Build Directory already exists: " + self.lineEditBuildDir.text())
-            self.plainTextEditLog.setPlainText(self._logText)
+            self.setLogText("->Build Directory already exists: " + self.lineEditBuildDir.text())
+            
         
-        self._logText += "->Downloading: " + self.lineEditRtpreemptPatch.text() + '\n'
-        self.plainTextEditLog.setPlainText(self._logText)       
+        self.setLogText("->Downloading: " + self.lineEditRtpreemptPatch.text())   
         subprocess.run(["wget", "-P", self.lineEditBuildDir.text(), self.lineEditRtpreemptPatch.text()])
         
-        self._logText += "->Downloading: " + self.lineEditLinuxKernel.text() + '\n'
-        self.plainTextEditLog.setPlainText(self._logText)
+        self.setLogText("->Downloading: " + self.lineEditLinuxKernel.text())
         subprocess.run(["wget", "-P", self.lineEditBuildDir.text(), self.lineEditLinuxKernel.text()])
         
-        self._logText += "->Extracting: " + self.lineEditRtpreemptPatch.text() + '\n'
-        self.plainTextEditLog.setPlainText(self._logText)
+        self.setLogText("->Extracting: " + self.lineEditRtpreemptPatch.text())
         subprocess.run(["gunzip", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditRtpreemptPatch.text()) ])
         
-        self._logText += "->Extracting: " + self.lineEditLinuxKernel.text() + '\n'
-        self.plainTextEditLog.setPlainText(self._logText)
+        self.setLogText("->Extracting: " + self.lineEditLinuxKernel.text())
         subprocess.run(["tar", "-xzf", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()), "-C",  self.lineEditBuildDir.text()])
         
-        self._logText += "->Patching linux kernel: " + self.lineEditLinuxKernel.text() + '\n'
-        
-        self.plainTextEditLog.setPlainText(self._logText)
-        #output = subprocess.run(["patch", "-d", self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz"), "-p1", '< ' + self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditRtpreemptPatch.text()).rstrip('.gz')],  capture_output=True) 
+        self.setLogText("->Patching linux kernel: " + self.lineEditLinuxKernel.text())
         output = os.system("patch -d " + self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz") + " -p1 " + '< ' + self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditRtpreemptPatch.text()).rstrip('.gz'))
         
-        # # print(output)
-        # self.plainTextEditLog.setPlainText("Linux kernel patched")
-        
-        self._logText += "->Copying " + self.lineEditKernelConfig.text() + '\n'
-        self.plainTextEditLog.setPlainText(self._logText)       
+        self.setLogText("->Copying " + self.lineEditKernelConfig.text())  
         subprocess.run(["cp", self.lineEditKernelConfig.text() , self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz") + "/.config"])
         
-        self._logText += "->Configure kernel" + '\n'
-        self.plainTextEditLog.setPlainText(self._logText)
-        # # subprocess.run(["yes", "''", "|", "make oldconfig", "-C",  self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz")])
+        self.setLogText("->Configure kernel")
         os.system("yes '' | make oldconfig -C" + self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz"))
 
 
         
-        
+    def setLogText(self, txt):
+        self._logText += txt + '\n'
+        self.plainTextEditLog.setPlainText(self._logText)
+           
 
     def testIsPackageInstalled(self, name):
         output = subprocess.run(["dpkg", "-l", name ],  capture_output=True)
         dpkg_output = output.stdout.decode('utf-8').split('\n')
         dpkg_output_line = dpkg_output[len(dpkg_output) - 2]
         if not dpkg_output_line.startswith('ii'):
-            self._logText += "->Install " + name + " and try it again. sudo apt install " + name + '\n'
-            self.plainTextEditLog.setPlainText(self._logText)
+            self.setLogText("->Install " + name + " and try it again. sudo apt install " + name)
+            # self._logText += "->Install " + name + " and try it again. sudo apt install " + name + '\n'
+            # self.plainTextEditLog.setPlainText(self._logText)
 
     def start(self):
         pass
