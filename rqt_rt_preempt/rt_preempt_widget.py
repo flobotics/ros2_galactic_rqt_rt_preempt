@@ -34,10 +34,10 @@ class RtpreemptWidget(QWidget):
          
         
         
-        self.buttonDownloadConfigure.clicked.connect(self.buttonDownloadConfigurePressed)
-        self.buttonMakeMenuconfig.clicked.connect(self.buttonMakeMenuconfigPressed)
-        self.buttonBuild.clicked.connect(self.buttonBuildPressed)
-        self.buttonInstall.clicked.connect(self.buttonInstallPressed)
+        self.buttonDownloadConfigure.clicked.connect(self.buttonDownloadConfigureClicked)
+        self.buttonMakeMenuconfig.clicked.connect(self.buttonMakeMenuconfigClicked)
+        self.buttonBuild.clicked.connect(self.buttonBuildClicked)
+        self.buttonInstall.clicked.connect(self.buttonInstallClicked)
         
         self.lineEditRtpreemptPatch.setText("http://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/patch-5.10.52-rt47.patch.gz")
         self.lineEditLinuxKernel.setText("https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.10.52.tar.gz")
@@ -50,22 +50,22 @@ class RtpreemptWidget(QWidget):
         self.labelCurrentRunningKernel.setText("Current running kernel: " + current_linux_version.stdout.decode('utf-8'))
         
      
-    def buttonMakeMenuconfigPressed(self):
+    def buttonMakeMenuconfigClicked(self):
         self.process.start( 'gnome-terminal', ['--working-directory', self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz"), '-e', 'make menuconfig'])
         
     
-    def buttonInstallPressed(self):
-        print("buttonInstallPressed:")
+    def buttonInstallClicked(self):
+        print("buttonInstallClicked:")
         wdir = self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz")
         self.process.start( 'gnome-terminal', ['--working-directory', wdir, '-e', "sudo make modules_install"])
         self.process.start( 'gnome-terminal', ['--working-directory', wdir, '-e', "sudo make install"])
     
-    def buttonBuildPressed(self):
+    def buttonBuildClicked(self):
         wdir = self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz")
         self.process.start( 'gnome-terminal', ['--working-directory', wdir, '-e', "make -j `nproc`"])
      
         
-    def buttonDownloadConfigurePressed(self):
+    def buttonDownloadConfigureClicked(self):
 
         self.testIsPackageInstalled('flex')
         self.testIsPackageInstalled('bison')
