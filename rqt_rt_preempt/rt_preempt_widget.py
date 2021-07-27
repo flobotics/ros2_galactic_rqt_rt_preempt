@@ -7,10 +7,11 @@ import os
 
 from ament_index_python import get_resource
 from python_qt_binding import loadUi
-from python_qt_binding.QtCore import Qt, QTimer, qWarning, Slot
+from python_qt_binding.QtCore import Qt, QTimer, qWarning, Slot, QProcess
 from python_qt_binding.QtGui import QIcon
-from python_qt_binding.QtWidgets import QHeaderView, QMenu, QTreeWidgetItem, QWidget
+from python_qt_binding.QtWidgets import QHeaderView, QMenu, QTreeWidgetItem, QWidget, QVBoxLayout
 from rqt_py_common.message_helpers import get_message_class
+
 
 import subprocess
 
@@ -43,6 +44,17 @@ class RtpreemptWidget(QWidget):
         
     def buttonBuildPressed(self):
         self.buttonBuild.setText('Text Changed')
+        
+        # exec("cd /tmp/haaa/linux-5.10.52 && make menuconfig")
+        # exec('/bin/bash')
+        self.process  = QProcess(self)
+        self.terminal = QWidget(self)
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.terminal)
+        self.process.start(
+            'xterm',
+            ['-into', str(self.terminal.winId())]
+        )
         
         self.testIsPackageInstalled('flex')
         self.testIsPackageInstalled('bison')
