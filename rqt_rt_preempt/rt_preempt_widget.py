@@ -59,7 +59,7 @@ class RtpreemptWidget(QWidget):
         self.testIsPackageInstalled('flex')
         self.testIsPackageInstalled('bison')
         self.testIsPackageInstalled('openssl')
-        self.testIsPackageInstalled('libncurses-dev')
+        self.testIsPackageInstalled('libncurses5-dev')
         self.testIsPackageInstalled('libssl-dev')
         self.testIsPackageInstalled('dkms')
         self.testIsPackageInstalled('libelf-dev')
