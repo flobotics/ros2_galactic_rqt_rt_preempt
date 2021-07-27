@@ -33,7 +33,7 @@ class RtpreemptWidget(QWidget):
          
         self._plugin = plugin
         
-        self.buttonBuild.clicked.connect(self.buttonBuildPressed)
+        self.buttonDownloadConfigure.clicked.connect(self.buttonDownloadConfigurePressed)
         
         self.lineEditRtpreemptPatch.setText("http://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/patch-5.10.52-rt47.patch.gz")
         self.lineEditLinuxKernel.setText("https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.10.52.tar.gz")
@@ -41,10 +41,8 @@ class RtpreemptWidget(QWidget):
         self.lineEditBuildDir.setText("/tmp/haaa")
         self.lineEditKernelConfig.setText("/boot/config-5.8.0-63-generic")
         
-        
-    def buttonBuildPressed(self):
-        self.buttonBuild.setText('Text Changed')
-        
+     
+    def buttonMakeMenuconfig(self):
         # exec("cd /tmp/haaa/linux-5.10.52 && make menuconfig")
         # exec('/bin/bash')
         self.process  = QProcess(self)
@@ -56,6 +54,15 @@ class RtpreemptWidget(QWidget):
             ['-into', str(self.terminal.winId())]
         )
         
+    
+    def buttonInstall(self):
+        pass
+    
+    
+        
+    def buttonDownloadConfigurePressed(self):
+        self.buttonBuild.setText('Text Changed')
+
         self.testIsPackageInstalled('flex')
         self.testIsPackageInstalled('bison')
         self.testIsPackageInstalled('openssl')

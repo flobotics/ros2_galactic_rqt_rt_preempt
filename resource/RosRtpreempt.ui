@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>838</width>
-    <height>453</height>
+    <height>493</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,14 +16,14 @@
   <widget class="QPushButton" name="buttonBuild">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>250</y>
+     <x>20</x>
+     <y>370</y>
      <width>201</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
-    <string>Build rt-preempt kernel</string>
+    <string>3. Build rt-preempt kernel</string>
    </property>
   </widget>
   <widget class="QLabel" name="labelCurrentRunningKernel">
@@ -111,10 +111,10 @@
   <widget class="QPlainTextEdit" name="plainTextEditLog">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>320</y>
-     <width>671</width>
-     <height>121</height>
+     <x>240</x>
+     <y>260</y>
+     <width>581</width>
+     <height>201</height>
     </rect>
    </property>
   </widget>
@@ -139,6 +139,45 @@
      <width>631</width>
      <height>25</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonMakeMenuconfig">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>320</y>
+     <width>201</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>2. make menuconfig</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonDownloadConfigure">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>270</y>
+     <width>201</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>1. Download and Configure</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonInstall">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>420</y>
+     <width>201</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>4. Install rt-preempt kernel</string>
    </property>
   </widget>
  </widget>
