@@ -63,7 +63,8 @@ class RtpreemptWidget(QWidget):
     
     def buttonBuildClicked(self):
         wdir = self.lineEditBuildDir.text() + '/' + os.path.basename(self.lineEditLinuxKernel.text()).rstrip(".tar.gz")
-        self.process.start( 'gnome-terminal', ['--working-directory', wdir, '-e', "make -j `nproc`"])
+        #self.process.start( 'gnome-terminal', ['--working-directory', wdir, '-e', "make -j `nproc`"])
+        self.process.start( 'gnome-terminal', ['--working-directory', wdir, '-e', "make -j 128"])
      
         
     def buttonDownloadConfigureClicked(self):
@@ -130,7 +131,12 @@ class RtpreemptWidget(QWidget):
             # self.plainTextEditLog.setPlainText(self._logText)
 
     def setHelpText(self):
-        self.plainTextEditHelp.setPlainText("When running 'make menuconfig'-button, you need to setup\n\
+        self.plainTextEditHelp.setPlainText("If you want to use another rt-preempt patch, look at \n\
+        http://cdn.kernel.org/pub/linux/kernel/projects/rt/ and choose another one.\n\
+        \n\
+        For another linux kernel you can look at https://mirrors.edge.kernel.org/pub/linux/kernel/ \n\
+        and choose if you want.\n\
+        When running 'make menuconfig'-button, you need to setup\n\
         rt-preempt stuff. This is done with make menuconfig and not per e.g. script-insert, because there\n\
         is included more, and perhaps this changes from version to version, so configure it with make menuconfig\n\
         is the best, most universal option. You need to select in make menuconfig the following \n\
